@@ -252,6 +252,7 @@ RETURN = r'''#'''
 import os
 import re
 import tempfile
+import shutil
 
 # import module snippets
 from ansible.module_utils.basic import AnsibleModule
@@ -275,9 +276,8 @@ def write_changes(module, b_lines, dest):
             module.fail_json(msg='failed to validate: '
                                  'rc:%s error:%s' % (rc, err))
     if valid:
-        module.atomic_move(tmpfile,
-                           to_native(os.path.realpath(to_bytes(dest, errors='surrogate_or_strict')), errors='surrogate_or_strict'),
-                           unsafe_writes=module.params['unsafe_writes'])
+        shutil.copyfile(tmpfile,
+                        to_native(os.path.realpath(to_bytes(dest, errors='surrogate_or_strict')), errors='surrogate_or_strict'))
 
 
 def check_file_attrs(module, changed, message, diff):
